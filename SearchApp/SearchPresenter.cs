@@ -79,7 +79,6 @@ namespace SearchApp
 
             aNode = new TreeNode(directoryInfo.Name, 0, 0); //TODO: Add images ID after name
             aNode.Tag = directoryInfo;
-            aNode.ImageKey = "folder";
 
             var subDirs = new DirectoryInfo[0];
             var files = new FileInfo[0];
@@ -111,7 +110,6 @@ namespace SearchApp
 
                 aNode = new TreeNode(fileInfo.Name, 1, 1); //TODO: Add images ID after name
                 aNode.Tag = fileInfo;
-                aNode.ImageKey = "file"; //TODO: somehow find correct image and key for file
 
                 return aNode;
         }

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace SearchApp
@@ -23,7 +23,7 @@ namespace SearchApp
         private bool Stopped => Cancellation != null ? Cancellation.IsCancellationRequested : true;
 
 
-        public Search(SearchPresenter presenter) 
+        public Search(SearchPresenter presenter)
         {
             Presenter = presenter;
 
@@ -42,7 +42,7 @@ namespace SearchApp
 
             paused = true;
             Program.Stopwatch.Pause();
-            Program.Presenter.SetState("Приостановлено");
+            //Program.Presenter.SetState("Приостановлено");
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace SearchApp
 
             paused = false;
             Program.Stopwatch.Start();
-            Program.Presenter.SetState("Возобновлено");
+            //Program.Presenter.SetState("Возобновлено");
         }
 
         /// <summary>
@@ -99,8 +99,10 @@ namespace SearchApp
             //Await those
             var tasks = new Task[]
             {
-                Task.Run(()=> CollectAllDirectories(path, directoryQueue, collectedDirectoryProgress), Cancellation.Token),
-                Task.Run(()=>CollectAllFiles(path, fileQueue, collectedFileProgress), Cancellation.Token)
+                //Task.Run(()=> CollectAllDirectories(path, directoryQueue, collectedDirectoryProgress), Cancellation.Token),
+                //Task.Run(()=>CollectAllFiles(path, fileQueue, collectedFileProgress), Cancellation.Token)
+                CollectAllDirectories(path, directoryQueue, collectedDirectoryProgress),
+                CollectAllFiles(path, fileQueue, collectedFileProgress)
             };
 
             try
@@ -109,6 +111,9 @@ namespace SearchApp
             }
             catch (TaskCanceledException) { return; }
 
+            if (Stopped)
+                return;
+
             Presenter.SetItemCount(directoryQueue.Count + fileQueue.Count);
             Presenter.SetState("Сбор сведений завершен, запущен поиск");
 
@@ -116,19 +121,20 @@ namespace SearchApp
             var foundFileProgress = new Progress<FileInfo>(OnFileFound);
             var pathSearchedProgress = new Progress<string>(OnPathSearched);
 
+            tasks = new Task[]
+            {
+                Task.Run(() => SearchAllFolders(query, directoryQueue, pathSearchedProgress, foundDirectoryProgress), Cancellation.Token),
+                Task.Run(() => SearchAllFiles(query, fileQueue, pathSearchedProgress, foundFileProgress), Cancellation.Token)
+            };
+
             try
             {
-                await Task.Run(() => SearchAllFolders(query, directoryQueue, pathSearchedProgress, foundDirectoryProgress), Cancellation.Token);
-            }
-            catch (TaskCanceledException) { return; }
-            try
-            {
-                await Task.Run(() => SearchAllFiles(query, fileQueue, pathSearchedProgress, foundFileProgress), Cancellation.Token);
+                await Task.WhenAll(tasks);
             }
             catch (TaskCanceledException) { return; }
 
-            //if(Stopped)
-            //    return;
+            if (Stopped)
+                return;
 
             Presenter.SetState("Поиск завершен");
             Finished?.Invoke();
@@ -144,18 +150,26 @@ namespace SearchApp
         /// <param name="path">Provided root directory</param>
         /// <param name="directoryQueue">Provided directory Queue</param>
         /// <param name="collectedProgress">Provided on collected progress</param>
-        private async void CollectAllDirectories(DirectoryInfo path, Queue<DirectoryInfo> directoryQueue, IProgress<DirectoryInfo> collectedProgress)
+        private async Task CollectAllDirectories(DirectoryInfo path, Queue<DirectoryInfo> directoryQueue, IProgress<DirectoryInfo> collectedProgress)
         {
-            foreach (var subDir in path.GetAllSubDirectories(collectedProgress))
+            //Get all subdirs in Task.Run
+            //Enqueue all of them
+            //Repeat for all subdirs
+
+            var directories = await Task.Run(() => path.GetSubDirectories(), Cancellation.Token);
+
+            foreach (var subDir in directories)
             {
                 while (paused && !Stopped)
-                    await Task.Yield();
+                    await Task.Delay(10);
 
                 if (Stopped)
                     return;
-
+                
                 directoryQueue.Enqueue(subDir);
-                collectedProgress?.Report(subDir);
+                await CollectAllDirectories(subDir, directoryQueue, collectedProgress);
+                //collectedProgress?.Report(subDir);
+                OnDirectoryCollected(subDir);
             }
         }
 
@@ -165,18 +179,27 @@ namespace SearchApp
         /// <param name="path">Provided root directory</param>
         /// <param name="fileQueue">Provided file Queue</param>
         /// <param name="collectedProgress">Provided on collected progress</param>
-        private void CollectAllFiles(DirectoryInfo path, Queue<FileInfo> fileQueue, IProgress<FileInfo> collectedProgress)
+        private async Task CollectAllFiles(DirectoryInfo path, Queue<FileInfo> fileQueue, IProgress<FileInfo> collectedProgress)
         {
-            foreach (var file in path.GetFiles())
+            var files = await Task.Run(() => path.GetAllFiles(), Cancellation.Token);
+            var directories = await Task.Run(() => path.GetSubDirectories(), Cancellation.Token);
+
+            foreach (var file in files) 
+            {
+                fileQueue.Enqueue(file);
+                //collectedProgress?.Report(file);
+                OnFileCollected(file);
+            }
+
+            foreach (var subDir in directories)
             {
                 while (paused && !Stopped)
-                    Thread.Sleep(10);
+                    await Task.Delay(10);
 
                 if (Stopped)
                     return;
 
-                fileQueue.Enqueue(file);
-                collectedProgress?.Report(file);
+                await CollectAllFiles(subDir, fileQueue, collectedProgress);
             }
         }
 
@@ -189,7 +212,7 @@ namespace SearchApp
         /// <param name="foundProgress">Provided directory found Progress</param>
         private void SearchAllFolders(string query, Queue<DirectoryInfo> directoryQueue, IProgress<string> pathSearchedProgress, IProgress<DirectoryInfo> foundProgress)
         {
-            Regex regex;
+            var regex = new Regex(query);
             DirectoryInfo directory;
 
             while (directoryQueue.Count > 0)
@@ -197,17 +220,14 @@ namespace SearchApp
                 //TODO: Remove for faster work
                 Thread.Sleep(10);
 
-                //How to wait for unpause?
                 while (paused && !Stopped)
                     Thread.Sleep(10);
 
                 if (Stopped)
                     return;
 
-                regex = new Regex(query);
                 directory = directoryQueue.Dequeue();
 
-                //Show path
                 pathSearchedProgress.Report(directory.FullName);
 
                 if (!regex.IsMatch(directory.Name))
@@ -225,7 +245,7 @@ namespace SearchApp
         /// <param name="progress">Provided file found Progress</param>
         private void SearchAllFiles(string query, Queue<FileInfo> fileQueue, IProgress<string> pathSearchedProgress, IProgress<FileInfo> progress)
         {
-            Regex regex;
+            var regex = new Regex(query);
             FileInfo file;
 
             while (fileQueue.Count > 0)
@@ -239,10 +259,8 @@ namespace SearchApp
                 if (Stopped)
                     return;
 
-                regex = new Regex(query);
                 file = fileQueue.Dequeue();
 
-                //Show path
                 pathSearchedProgress.Report(file.FullName);
 
                 if (!regex.IsMatch(file.Name))

@@ -93,7 +93,7 @@
             // SearchFolderInput
             // 
             this.SearchFolderInput.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.SearchFolderInput.Location = new System.Drawing.Point(117, 10);
+            this.SearchFolderInput.Location = new System.Drawing.Point(104, 10);
             this.SearchFolderInput.Margin = new System.Windows.Forms.Padding(4);
             this.SearchFolderInput.Name = "SearchFolderInput";
             this.SearchFolderInput.Size = new System.Drawing.Size(387, 22);
@@ -103,8 +103,8 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.FoundText, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.TimeText, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.StateText, 1, 0);
@@ -122,6 +122,7 @@
             // FoundText
             // 
             this.FoundText.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.FoundText.AutoEllipsis = true;
             this.FoundText.AutoSize = true;
             this.FoundText.Location = new System.Drawing.Point(4, 5);
             this.FoundText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -129,11 +130,12 @@
             this.FoundText.Size = new System.Drawing.Size(50, 16);
             this.FoundText.TabIndex = 2;
             this.FoundText.Text = "0 found";
-            this.FoundText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.FoundText.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // TimeText
             // 
             this.TimeText.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.TimeText.AutoEllipsis = true;
             this.TimeText.AutoSize = true;
             this.TimeText.Location = new System.Drawing.Point(1110, 32);
             this.TimeText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -146,6 +148,7 @@
             // StateText
             // 
             this.StateText.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.StateText.AutoEllipsis = true;
             this.StateText.AutoSize = true;
             this.StateText.Location = new System.Drawing.Point(1079, 5);
             this.StateText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -158,6 +161,7 @@
             // CountText
             // 
             this.CountText.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.CountText.AutoEllipsis = true;
             this.CountText.AutoSize = true;
             this.CountText.Location = new System.Drawing.Point(4, 32);
             this.CountText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -165,15 +169,15 @@
             this.CountText.Size = new System.Drawing.Size(82, 16);
             this.CountText.TabIndex = 3;
             this.CountText.Text = "0 in directory";
-            this.CountText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.CountText.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 55);
+            this.label2.Location = new System.Drawing.Point(3, 47);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(103, 16);
+            this.label2.Size = new System.Drawing.Size(62, 32);
             this.label2.TabIndex = 9;
             this.label2.Text = "Текст запроса";
             // 
@@ -191,10 +195,10 @@
             // 
             this.ResumeButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.ResumeButton.Enabled = false;
-            this.ResumeButton.Location = new System.Drawing.Point(1049, 49);
+            this.ResumeButton.Location = new System.Drawing.Point(1056, 49);
             this.ResumeButton.Margin = new System.Windows.Forms.Padding(4);
             this.ResumeButton.Name = "ResumeButton";
-            this.ResumeButton.Size = new System.Drawing.Size(99, 28);
+            this.ResumeButton.Size = new System.Drawing.Size(92, 28);
             this.ResumeButton.TabIndex = 7;
             this.ResumeButton.Text = "Resume";
             this.ResumeButton.UseVisualStyleBackColor = true;
@@ -204,10 +208,10 @@
             // 
             this.StopButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.StopButton.Enabled = false;
-            this.StopButton.Location = new System.Drawing.Point(1049, 7);
+            this.StopButton.Location = new System.Drawing.Point(1056, 7);
             this.StopButton.Margin = new System.Windows.Forms.Padding(4);
             this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(99, 28);
+            this.StopButton.Size = new System.Drawing.Size(92, 28);
             this.StopButton.TabIndex = 6;
             this.StopButton.Text = "Stop";
             this.StopButton.UseVisualStyleBackColor = true;
@@ -217,10 +221,10 @@
             // 
             this.PauseButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.PauseButton.Enabled = false;
-            this.PauseButton.Location = new System.Drawing.Point(941, 49);
+            this.PauseButton.Location = new System.Drawing.Point(956, 49);
             this.PauseButton.Margin = new System.Windows.Forms.Padding(4);
             this.PauseButton.Name = "PauseButton";
-            this.PauseButton.Size = new System.Drawing.Size(100, 28);
+            this.PauseButton.Size = new System.Drawing.Size(92, 28);
             this.PauseButton.TabIndex = 5;
             this.PauseButton.Text = "Pause";
             this.PauseButton.UseVisualStyleBackColor = true;
@@ -229,10 +233,10 @@
             // SearchButton
             // 
             this.SearchButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.SearchButton.Location = new System.Drawing.Point(941, 7);
+            this.SearchButton.Location = new System.Drawing.Point(956, 7);
             this.SearchButton.Margin = new System.Windows.Forms.Padding(4);
             this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(100, 28);
+            this.SearchButton.Size = new System.Drawing.Size(92, 28);
             this.SearchButton.TabIndex = 4;
             this.SearchButton.Text = "Search";
             this.SearchButton.UseVisualStyleBackColor = true;
@@ -241,7 +245,7 @@
             // SearchQueryInput
             // 
             this.SearchQueryInput.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.SearchQueryInput.Location = new System.Drawing.Point(117, 52);
+            this.SearchQueryInput.Location = new System.Drawing.Point(104, 52);
             this.SearchQueryInput.Margin = new System.Windows.Forms.Padding(4);
             this.SearchQueryInput.Name = "SearchQueryInput";
             this.SearchQueryInput.Size = new System.Drawing.Size(387, 22);
@@ -268,10 +272,10 @@
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 4;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.809028F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 71.52778F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.375F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.288195F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel2.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.SearchButton, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.label1, 0, 0);

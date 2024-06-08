@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SearchApp
 {
@@ -14,10 +15,10 @@ namespace SearchApp
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //Subscribe to event
+            //Subscribe to event  
             Program.Search.Finished += (Action)ResetSearchButtons;
         }
-        
+
 
         private void treeView1_DoubleClick(object sender, EventArgs e)
         {
